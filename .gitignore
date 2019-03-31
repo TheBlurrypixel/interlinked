@@ -6,7 +6,8 @@ components
 SequenceControl
 SpineEasel
 index.html
+index.js
 assets
 spine-runtimes
-index.js
+testCanvas.html
 testCanvas.js
