@@ -120,7 +120,7 @@ p.nominalBounds = new cjs.Rectangle(0,0,1036.4,197.7);
 	this.timeline.addTween(cjs.Tween.get(this.rigidInstance).wait(1));
 }).prototype = getMCSymbolPrototype(lib.rigidAnim, new cjs.Rectangle(0,0,184.3,184.3), null);
 (lib.gameOver = function(mode,startPosition,loop) {
-	this.initialize(mode,startPosition,loop,{});
+if (loop == null) { loop = false; }	this.initialize(mode,startPosition,loop,{});
 	// timeline functions:
 	this.frame_61 = function() {
 		this.stop();
@@ -295,7 +295,7 @@ if (loop == null) { loop = false; }	this.initialize(mode,startPosition,loop,{});
 	this.jumpBtnInstance = new lib.jumpBtn();
 	this.jumpBtnInstance.name = "jumpBtnInstance";
 	this.jumpBtnInstance.parent = this;
-	this.jumpBtnInstance.setTransform(960,960,1,1,0,0,0,960,960);
+	this.jumpBtnInstance.setTransform(960,1280,1,1,0,0,0,960,960);
 	new cjs.ButtonHelper(this.jumpBtnInstance, 0, 1, 2, false, new lib.jumpBtn(), 3);
 	this.timeline.addTween(cjs.Tween.get(this.jumpBtnInstance).wait(2));
 	// rigidInstance
@@ -312,7 +312,7 @@ if (loop == null) { loop = false; }	this.initialize(mode,startPosition,loop,{});
 	this.colliderInstance.cache(-2,-2,2311,621);
 	this.timeline.addTween(cjs.Tween.get(this.colliderInstance).wait(2));
 }).prototype = p = new cjs.MovieClip();
-p.nominalBounds = new cjs.Rectangle(768.1,768,1411.1,1344);
+p.nominalBounds = new cjs.Rectangle(768.1,768,1411.1,1472);
 // library properties:
 lib.properties = {
 	id: '73B96B5BD3120C44978DFE9EA3B5EDFE',
@@ -404,9 +404,79 @@ an.makeResponsive = function(isResp, respDim, isScale, scaleType, domContainers)
 })(createjs = createjs||{}, AdobeAn = AdobeAn||{});
 var createjs, AdobeAn;
 </script>
+<script type='text/javascript' src='https://unpkg.com/react@16/umd/react.development.js'></script>
+<script type='text/javascript' src='https://unpkg.com/react-dom@16/umd/react-dom.development.js'></script>
+<script type='text/javascript' src='https://unpkg.com/@babel/standalone/babel.min.js'></script>
 <script>
 // Global Scripts
-	/*
+	</script>
+<style>
+.form {
+	position: fixed;
+	width: 100%;
+}
+.ui-textinput {
+	position: fixed;
+	width: 600px;
+	height: 25px;
+	top: 20px;
+	left: 20px;
+}
+.form label {
+	padding: 20px;
+}
+.form li {
+	list-style-type: none;	
+}
+.form li input {
+	pointer-events: all;
+	box-sizing: border-box;
+	width: 30px;
+}
+</style>
+<script type="text/babel">
+// const Banner = () => (
+//   <h1>Hello World</h1>
+// );
+class Constants extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			jumpPower: 20,
+			gravity: 2,
+			bounciness: 0.8
+		}
+		this.handleCheck = this.handleCheck.bind(this);
+	}
+	handleCheck(event) {
+		this.state[event.target.name] = parseFloat(event.target.value);
+		//console.log(this.state);
+	}
+	render() {
+		return (
+		<div className="form">
+			<form className="ui-textinput">
+				<li>
+					<label htmlFor="jump-power">Jump Power</label>
+					<input type="text" name="jump-power" onChange={this.handleCheck} defaultValue={this.state.jumpPower} />
+				</li>
+				<li>
+					<label htmlFor="gravity">Gravity</label>
+					<input type="text" name="gravity" onChange={this.handleCheck} defaultValue={this.state.gravity} />
+				</li>
+				<li>
+					<label htmlFor="bounciness">Bounciness</label>
+					<input type="text" name="bounciness" onChange={this.handleCheck} defaultValue={this.state.bounciness} />
+				</li>
+			</form>
+		</div>
+		)
+	}
+}
+ReactDOM.render(<Constants />,document.getElementById('dom_overlay_container'))
+</script>
+<script type="text/javascript">
+/*
   The MIT License
   Copyright (c) 2012 Olaf Horstmann, indiegamr.com
   Permission is hereby granted, free of charge, to any person obtaining a copy
