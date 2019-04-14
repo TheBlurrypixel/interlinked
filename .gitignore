@@ -11,3 +11,4 @@ assets
 spine-runtimes
 testCanvas.html
 testCanvas.js
+builds/node_modules
