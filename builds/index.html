@@ -167,9 +167,10 @@ if (loop == null) { loop = false; }	this.initialize(mode,startPosition,loop,{});
 			console.log("FPS: "+createjs.Ticker.getMeasuredFPS());
 		}*/
 		// constants
-		const JUMPPOWER = 40;
-		const G = 2;
-		const BOUNCINESS = 0.8; // should always be below 1.0 for8 law of conservation
+		//const JUMPPOWER = 40;
+		//const G = 2;
+		//const BOUNCINESS = 0.8; // should always be below 1.0 for8 law of conservation
+		// should always be below 1.0 for8 law of conservation
 		const SPEED = 0;
 		// variables
 		var direction = 1;
@@ -201,7 +202,7 @@ if (loop == null) { loop = false; }	this.initialize(mode,startPosition,loop,{});
 				if(collision) {
 					if(!switchedFlag) {
 						if(e.target == ground) {
-							if(downwardForce < G) {
+							if(downwardForce < gameConstants.gravity) {
 								var inertPt = commonParent.localToLocal(rigidLocalPt.x, (colliderBmp.y - colliderBmp.regY - rigidBmp.regY - 1), rigid.parent);
 								rigid.x = inertPt.x;
 								rigid.y = inertPt.y;
@@ -210,7 +211,8 @@ if (loop == null) { loop = false; }	this.initialize(mode,startPosition,loop,{});
 								e.target.removeEventListener('tick', colCall);
 							}
 							else {
-								downwardForce = -BOUNCINESS*Math.abs(downwardForce);
+		//						downwardForce = -BOUNCINESS*Math.abs(downwardForce);
+								downwardForce = -gameConstants.bounciness*Math.abs(downwardForce);
 								switchedFlag = true;
 							}
 						}
@@ -253,9 +255,10 @@ if (loop == null) { loop = false; }	this.initialize(mode,startPosition,loop,{});
 			this.jumpBtnInstance.removeAllEventListeners();
 			this.jumpBtnInstance.addEventListener('click', (e) => {
 				jumping = true;
-				downwardForce = -JUMPPOWER;
+				//downwardForce = -JUMPPOWER;
+				downwardForce = -gameConstants.jumpPower;
 				checkForCollisions(this.rigidAnimInstance.rigidInstance, this, this.colliderInstance, this.gameOverInstance, this.blockAnimInstance.blockInstance);
-				switchedFlag = true;	
+				switchedFlag = true;
 			});
 			var thisRev;
 			this.rigidAnimInstance.rigidInstance.x = this.rigidAnimInstance.rigidInstance.regX;
@@ -263,7 +266,8 @@ if (loop == null) { loop = false; }	this.initialize(mode,startPosition,loop,{});
 			this.rigidAnimInstance.rigidInstance.removeAllEventListeners();
 			this.rigidAnimInstance.rigidInstance.addEventListener('tick', thisRev = (e) => {
 				if(jumping) {
-					downwardForce += !switchedFlag ? G : 0;
+					//downwardForce += !switchedFlag ? G : 0;
+					downwardForce += !switchedFlag ? gameConstants.gravity : 0;
 					e.target.y += downwardForce;
 				}
 				e.target.x += SPEED;
@@ -433,8 +437,16 @@ var createjs, AdobeAn;
 	box-sizing: border-box;
 	width: 30px;
 }
+.framerate {
+	position: fixed;
+	width: 600px;
+	height: 25px;
+	bottom: 20px;
+	left: 20px;
+}
 </style>
 <script type="text/babel">
+var gameConst = window.gameConstants = {};
 // const Banner = () => (
 //   <h1>Hello World</h1>
 // );
@@ -442,23 +454,24 @@ class Constants extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			jumpPower: 20,
-			gravity: 2,
-			bounciness: 0.8
+			jumpPower: 40,
+			gravity: 3,
+			bounciness: 0.5
 		}
+		Object.assign(gameConst, this.state);
 		this.handleCheck = this.handleCheck.bind(this);
 	}
 	handleCheck(event) {
 		this.state[event.target.name] = parseFloat(event.target.value);
-		//console.log(this.state);
+		Object.assign(gameConst, this.state);
 	}
 	render() {
 		return (
 		<div className="form">
 			<form className="ui-textinput">
 				<li>
-					<label htmlFor="jump-power">Jump Power</label>
-					<input type="text" name="jump-power" onChange={this.handleCheck} defaultValue={this.state.jumpPower} />
+					<label htmlFor="jumpPower">Jump Power</label>
+					<input type="text" name="jumpPower" onChange={this.handleCheck} defaultValue={this.state.jumpPower} />
 				</li>
 				<li>
 					<label htmlFor="gravity">Gravity</label>
@@ -473,7 +486,39 @@ class Constants extends React.Component {
 		)
 	}
 }
-ReactDOM.render(<Constants />,document.getElementById('dom_overlay_container'))
+/*createjs.Ticker.addEventListener("tick", tick);
+function tick() {
+	console.log("FPS: "+createjs.Ticker.getMeasuredFPS());
+}*/
+class Framerate extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			framerate: 60
+		}
+		this.update = this.update.bind(this);
+		createjs.Ticker.addEventListener("tick", () => {
+			this.update();
+		});
+	}
+	update() {
+		this.setState( { framerate: createjs.Ticker.getMeasuredFPS() } )
+	}
+	render() {
+		return (
+		<div className="framerate">
+			framerate: {this.state.framerate}
+		</div>
+		)
+	}
+}
+const UI = () => (
+	<div>
+		<Constants />
+		<Framerate />
+	</div>
+);
+ReactDOM.render( <UI />, document.getElementById('dom_overlay_container'))
 </script>
 <script type="text/javascript">
 /*
